@@ -1,359 +1,298 @@
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import "../App.css";
 
 function Profile() {
 
+    const navigate = useNavigate();
     const { id } = useParams();
 
+    const [user, setUser] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
 
-    const people = {
-        1: {
-            name: "Priya Sharma",
-            role: "Frontend Developer",
-            location: "Bengaluru, India",
-            avatar: "P",
-            match: 94,
-            about:
-                "Frontend developer passionate about creating modern and responsive web applications. I enjoy helping people understand React and JavaScript through practical projects.",
-            teaches: [
-                "React",
-                "JavaScript",
-                "CSS",
-                "HTML"
-            ],
-            learns: [
-                "Python",
-                "Django",
-                "Backend Development"
-            ]
-        },
+    const [name, setName] = useState("");
+    const [bio, setBio] = useState("");
+    const [teachSkills, setTeachSkills] = useState("");
+    const [learnSkills, setLearnSkills] = useState("");
 
-        2: {
-            name: "Rohan Verma",
-            role: "Backend Developer",
-            location: "Hyderabad, India",
-            avatar: "R",
-            match: 91,
-            about:
-                "Backend developer focused on Python, APIs and databases. Looking to exchange backend knowledge with frontend developers.",
-            teaches: [
-                "Python",
-                "Django",
-                "SQL",
-                "REST APIs"
-            ],
-            learns: [
-                "React",
-                "JavaScript",
-                "Frontend Development"
-            ]
-        },
+    useEffect(() => {
 
-        3: {
-            name: "Anjali Mehta",
-            role: "UI/UX Designer",
-            location: "Mumbai, India",
-            avatar: "A",
-            match: 87,
-            about:
-                "UI/UX designer who loves creating clean interfaces and meaningful user experiences. I enjoy collaborating with developers.",
-            teaches: [
-                "UI/UX",
-                "Figma",
-                "Wireframing",
-                "Design"
-            ],
-            learns: [
-                "HTML",
-                "CSS",
-                "React"
-            ]
-        },
+        const storedUser = localStorage.getItem("user");
 
-        4: {
-            name: "Arjun Rao",
-            role: "Data Analyst",
-            location: "Chennai, India",
-            avatar: "A",
-            match: 82,
-            about:
-                "Data analyst interested in turning data into useful insights. I enjoy learning modern web development.",
-            teaches: [
-                "Python",
-                "SQL",
-                "Excel",
-                "Data Analysis"
-            ],
-            learns: [
-                "JavaScript",
-                "React",
-                "Node.js"
-            ]
-        },
-
-        5: {
-            name: "Sneha Reddy",
-            role: "Full Stack Developer",
-            location: "Hyderabad, India",
-            avatar: "S",
-            match: 79,
-            about:
-                "Full stack developer interested in building scalable applications and learning cloud technologies.",
-            teaches: [
-                "Node.js",
-                "Express",
-                "MongoDB",
-                "JavaScript"
-            ],
-            learns: [
-                "Python",
-                "AWS",
-                "Docker"
-            ]
-        },
-
-        6: {
-            name: "Karthik Kumar",
-            role: "Cloud Engineer",
-            location: "Pune, India",
-            avatar: "K",
-            match: 76,
-            about:
-                "Cloud engineer passionate about AWS, Linux and DevOps. Always interested in exchanging knowledge with developers.",
-            teaches: [
-                "AWS",
-                "Docker",
-                "Linux",
-                "DevOps"
-            ],
-            learns: [
-                "React",
-                "Node.js",
-                "JavaScript"
-            ]
+        if (!storedUser) {
+            navigate("/login");
+            return;
         }
-    };
+
+        fetch(`http://localhost:3000/users/${id}`)
+            .then(response => response.json())
+            .then(data => {
+
+                if (data.user) {
+
+                    setUser(data.user);
+
+                    setName(data.user.name || "");
+                    setBio(data.user.bio || "");
+                    setTeachSkills(data.user.teach_skills || "");
+                    setLearnSkills(data.user.learn_skills || "");
+
+                }
+
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+    }, [id, navigate]);
 
 
-    const person = people[id] || people[1];
+    if (!user) {
+        return <p>Loading...</p>;
+    }
+
+
+    const storedUser = localStorage.getItem("user");
+    const loggedUser = storedUser
+        ? JSON.parse(storedUser)
+        : null;
+
+    const isOwnProfile =
+        loggedUser && Number(loggedUser.id) === Number(id);
+
+
+    async function handleSubmit(e) {
+
+    e.preventDefault();
+
+    try {
+
+        const response = await fetch(
+            `http://localhost:3000/users/${id}`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    name: name,
+                    bio: bio,
+                    teach_skills: teachSkills,
+                    learn_skills: learnSkills
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+            alert(data.message);
+
+            const updatedUser = {
+                ...user,
+                name: name,
+                bio: bio,
+                teach_skills: teachSkills,
+                learn_skills: learnSkills
+            };
+
+            setUser(updatedUser);
+
+            localStorage.setItem(
+                "user",
+                JSON.stringify({
+                    id: user.id,
+                    name: name,
+                    email: user.email
+                })
+            );
+
+            setIsEditing(false);
+
+        } else {
+
+            alert(data.message);
+
+        }
+
+    } catch (error) {
+
+        console.log(error);
+
+        alert("Failed to update profile");
+
+    }
+}
 
 
     return (
         <>
-
             <Navbar />
 
             <main className="profile-page">
 
-                <Link
-                    to="/matches"
-                    className="back-link"
-                >
-                    ← Back to Matches
-                </Link>
+                <div className="profile-container">
 
-
-                {/* PROFILE HERO */}
-
-                <section className="profile-hero">
-
-                    <div className="profile-main">
-
-                        <div className="profile-large-avatar">
-                            {person.avatar}
-                        </div>
-
-
-                        <div>
-
-                            <div className="hero-badge">
-                                ✦ SKILL MATCH
-                            </div>
-
-                            <h1>
-                                {person.name}
-                            </h1>
-
-                            <p className="profile-role">
-                                {person.role}
-                            </p>
-
-                            <p className="profile-location">
-                                ◉ {person.location}
-                            </p>
-
-                        </div>
-
+                    <div className="profile-avatar">
+                        {user.name
+                            ? user.name.charAt(0).toUpperCase()
+                            : "U"}
                     </div>
 
 
-                    <div className="profile-match">
+                    {!isEditing ? (
 
-                        <span>
-                            MATCH
-                        </span>
+                        <>
+                            <h1>{user.name}</h1>
 
-                        <strong>
-                            {person.match}%
-                        </strong>
-
-                        <small>
-                            Great compatibility
-                        </small>
-
-                    </div>
-
-                </section>
-
-
-                {/* PROFILE CONTENT */}
-
-                <section className="profile-layout">
-
-
-                    {/* LEFT */}
-
-                    <div className="profile-left">
-
-                        <div className="profile-panel">
-
-                            <span className="small-label">
-                                ABOUT
-                            </span>
-
-                            <h2>
-                                About {person.name.split(" ")[0]}
-                            </h2>
-
-                            <p>
-                                {person.about}
+                            <p className="profile-email">
+                                {user.email}
                             </p>
 
-                        </div>
-
-
-                        <div className="profile-panel">
-
-                            <span className="small-label">
-                                ✦ CAN TEACH
-                            </span>
-
-                            <h2>
-                                Skills I Can Share
-                            </h2>
-
-                            <div className="profile-skills">
-
-                                {person.teaches.map(
-                                    (skill) => (
-
-                                        <span
-                                            className="profile-skill teach-profile"
-                                            key={skill}
-                                        >
-                                            ✦ {skill}
-                                        </span>
-
-                                    )
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div className="profile-panel">
-
-                            <span className="small-label">
-                                ◇ WANTS TO LEARN
-                            </span>
-
-                            <h2>
-                                Skills I Want
-                            </h2>
-
-                            <div className="profile-skills">
-
-                                {person.learns.map(
-                                    (skill) => (
-
-                                        <span
-                                            className="profile-skill learn-profile"
-                                            key={skill}
-                                        >
-                                            ◇ {skill}
-                                        </span>
-
-                                    )
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    {/* RIGHT */}
-
-                    <aside className="profile-sidebar">
-
-                        <div className="connect-card">
-
-                            <div className="connect-icon">
-                                ✦
-                            </div>
-
-                            <h2>
-                                Start a Skill Swap
-                            </h2>
-
-                            <p>
-                                You can teach each other valuable
-                                skills. Send a connection request
-                                and start learning together.
+                            <p className="profile-bio">
+                                {user.bio || "No bio available"}
                             </p>
 
-                            <button className="profile-connect">
-                                Connect with {person.name.split(" ")[0]} →
-                            </button>
 
-                        </div>
+                            <div className="profile-section">
 
+                                <h2>Skills I Teach</h2>
 
-                        <div className="compatibility-card">
-
-                            <span>
-                                COMPATIBILITY
-                            </span>
-
-                            <div className="compatibility-number">
-                                {person.match}%
-                            </div>
-
-                            <div className="progress-bar">
-
-                                <div
-                                    style={{
-                                        width: `${person.match}%`
-                                    }}
-                                ></div>
+                                <p>
+                                    {user.teach_skills || "No skills added"}
+                                </p>
 
                             </div>
 
-                            <p>
-                                Your skills align strongly with
-                                this person's learning goals.
-                            </p>
 
-                        </div>
+                            <div className="profile-section">
 
-                    </aside>
+                                <h2>Skills I Want to Learn</h2>
 
-                </section>
+                                <p>
+                                    {user.learn_skills || "No skills added"}
+                                </p>
+
+                            </div>
+
+
+                            {isOwnProfile && (
+
+                                <button
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    ✏️ Edit Profile
+                                </button>
+
+                            )}
+
+                        </>
+
+                    ) : (
+
+                        <form onSubmit={handleSubmit}>
+
+                            <h1>Edit Profile</h1>
+
+
+                            <div className="profile-form-group">
+
+                                <label>Name</label>
+
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) =>
+                                        setName(e.target.value)
+                                    }
+                                />
+
+                            </div>
+
+
+                            <div className="profile-form-group">
+
+                                <label>Bio</label>
+
+                                <textarea
+                                    value={bio}
+                                    onChange={(e) =>
+                                        setBio(e.target.value)
+                                    }
+                                />
+
+                            </div>
+
+
+                            <div className="profile-form-group">
+
+                                <label>Skills I Teach</label>
+
+                                <input
+                                    type="text"
+                                    value={teachSkills}
+                                    onChange={(e) =>
+                                        setTeachSkills(e.target.value)
+                                    }
+                                    placeholder="Java, React, JavaScript"
+                                />
+
+                            </div>
+
+
+                            <div className="profile-form-group">
+
+                                <label>Skills I Want to Learn</label>
+
+                                <input
+                                    type="text"
+                                    value={learnSkills}
+                                    onChange={(e) =>
+                                        setLearnSkills(e.target.value)
+                                    }
+                                    placeholder="Python, SQL, Node.js"
+                                />
+
+                            </div>
+
+
+                            <div className="profile-form-actions">
+
+                                <button type="submit">
+                                    Save Changes
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditing(false)}
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    )}
+
+
+                    {!isEditing && (
+
+                        <button
+                            onClick={() => navigate("/connections")}
+                        >
+                            Back to Connections
+                        </button>
+
+                    )}
+
+                </div>
 
             </main>
-
         </>
     );
 }
