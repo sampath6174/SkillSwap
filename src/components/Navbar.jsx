@@ -1,6 +1,5 @@
-import { Link, useNavigate, } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
 
 function Navbar() {
 
@@ -11,7 +10,6 @@ function Navbar() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
-
 
 
   // Fetch notifications
@@ -98,37 +96,53 @@ function Navbar() {
 
   return (
     <nav className="navbar">
+
+
+      {/* MOBILE LEFT SIDE */}
+
       <div className="mobile-nav-left">
 
-  <button
-    className="hamburger-button"
-    onClick={() => setShowMobileMenu(!showMobileMenu)}
-  >
-    {showMobileMenu ? "✕" : "☰"}
-  </button>
+        <button
+          className="hamburger-button"
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+        >
+          {showMobileMenu ? "✕" : "☰"}
+        </button>
 
-  <Link to="/" className="logo">
-    <span>✦</span> SkillSwap
-  </Link>
+        <Link to="/" className="logo">
+          <span>✦</span> SkillSwap
+        </Link>
 
-</div>
+      </div>
 
+
+
+      {/* NAVIGATION LINKS */}
 
       <div className="nav-links">
 
         <Link to="/">Home</Link>
 
         <Link to="/matches">Find Skills</Link>
-        
 
-{user && (
-    <>
-        <Link to="/connections">Connections</Link>
 
-        <Link to="/messages">Messages</Link>
-    </>
-)}
+        {/* LOGGED-IN LINKS */}
 
+        {user && (
+          <>
+            <Link to="/connections">
+              Connections
+            </Link>
+
+            <Link to="/messages">
+              Messages
+            </Link>
+          </>
+        )}
+
+
+
+        {/* LOGGED-IN USER */}
 
         {user ? (
 
@@ -154,6 +168,7 @@ function Navbar() {
                   position: "relative"
                 }}
               >
+
                 🔔
 
                 {unreadCount > 0 && (
@@ -179,6 +194,7 @@ function Navbar() {
                 )}
 
               </button>
+
 
 
               {/* NOTIFICATION DROPDOWN */}
@@ -254,7 +270,8 @@ function Navbar() {
             </div>
 
 
-            {/* USER MENU */}
+
+            {/* USER PROFILE ICON */}
 
             <div
               className="nav_user"
@@ -269,25 +286,26 @@ function Navbar() {
             >
 
               <button
-  className="user_icon"
-  style={{
-    fontSize: "30px",
-    background: "none",
-    border: "none"
-  }}
-  onClick={() => {
-    const loggedUser = JSON.parse(localStorage.getItem("user"));
+                className="user_icon"
+                style={{
+                  fontSize: "30px",
+                  background: "none",
+                  border: "none"
+                }}
+                onClick={() => {
 
-    if (loggedUser) {
-      navigate(`/profile/${loggedUser.id}`);
-    }
-  }}
->
-  👨🏻‍💻
-</button>
+                  const loggedUser = JSON.parse(
+                    localStorage.getItem("user")
+                  );
 
+                  if (loggedUser) {
+                    navigate(`/profile/${loggedUser.id}`);
+                  }
 
-             
+                }}
+              >
+                👨🏻‍💻
+              </button>
 
             </div>
 
@@ -295,18 +313,23 @@ function Navbar() {
 
         ) : (
 
+          /* LOGIN / REGISTER */
+
           <>
 
-            <Link to="/login">
+            <Link
+              to="/login"
+              className="mobile-auth-link"
+            >
               Login
             </Link>
 
             <Link
               to="/register"
-              className="register-btn"
+              className="register-btn mobile-auth-link"
               id="register"
             >
-              Register
+              Login / Register
             </Link>
 
           </>
@@ -314,43 +337,55 @@ function Navbar() {
         )}
 
       </div>
+
+
+
+      {/* MOBILE MENU */}
+
       {showMobileMenu && (
-  <div className="mobile-menu">
 
-    <Link
-      to="/"
-      onClick={() => setShowMobileMenu(false)}
-    >
-      Home
-    </Link>
+        <div className="mobile-menu">
 
-    <Link
-      to="/matches"
-      onClick={() => setShowMobileMenu(false)}
-    >
-      Find Skills
-    </Link>
+          <Link
+            to="/"
+            onClick={() => setShowMobileMenu(false)}
+          >
+            Home
+          </Link>
 
-    {user && (
-      <>
-        <Link
-          to="/connections"
-          onClick={() => setShowMobileMenu(false)}
-        >
-          Connections
-        </Link>
 
-        <Link
-          to="/messages"
-          onClick={() => setShowMobileMenu(false)}
-        >
-          Messages
-        </Link>
-      </>
-    )}
+          <Link
+            to="/matches"
+            onClick={() => setShowMobileMenu(false)}
+          >
+            Find Skills
+          </Link>
 
-  </div>
-)}
+
+          {user && (
+            <>
+
+              <Link
+                to="/connections"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Connections
+              </Link>
+
+
+              <Link
+                to="/messages"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Messages
+              </Link>
+
+            </>
+          )}
+
+        </div>
+
+      )}
 
     </nav>
   );

@@ -1975,6 +1975,13 @@ a {
 ===================================================== */
 
 @media (max-width: 750px) {
+    .nav-links > a {
+    display: none;
+}
+
+.nav-links > .mobile-auth-link {
+    display: block;
+}
 
     .navbar {
         padding: 0 5%;
