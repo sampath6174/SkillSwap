@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
+import API_URL from "../api";
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ function Dashboard() {
     }
 
     const loggedUser = JSON.parse(storedUser);
-    fetch(`http://localhost:3000/connections/user/${loggedUser.id}`)
+    fetch(`${API_URL}/connections/user/${loggedUser.id}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -28,7 +29,7 @@ function Dashboard() {
         console.log(error);
       });
 
-      fetch(`http://localhost:3000/skill-swaps/${loggedUser.id}`)
+      fetch(`${API_URL}/skill-swaps/${loggedUser.id}`)
     .then(response => response.json())
     .then(data => {
         setSwapsCount(data.swaps?.length || 0);
@@ -37,7 +38,7 @@ function Dashboard() {
         console.log(error);
     });
 
-    fetch(`http://localhost:3000/users`)
+    fetch(`${API_URL}/users`)
       .then((response) => response.json())
       .then((data) => {
         const users = data.users || [];
@@ -82,7 +83,7 @@ function Dashboard() {
         console.log(error);
       });
 
-    fetch(`http://localhost:3000/users/${loggedUser.id}`)
+    fetch(`${API_URL}/users/${loggedUser.id}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.user) {

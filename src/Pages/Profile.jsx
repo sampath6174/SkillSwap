@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "../App.css";
+import API_URL from "../api";
 
 function Profile() {
 
@@ -25,7 +26,7 @@ function Profile() {
             return;
         }
 
-        fetch(`http://localhost:3000/users/${id}`)
+        fetch(`${API_URL}/users/${id}`)
             .then(response => response.json())
             .then(data => {
 
@@ -69,7 +70,7 @@ function Profile() {
     try {
 
         const response = await fetch(
-            `http://localhost:3000/users/${id}`,
+            `${API_URL}/users/${id}`,
             {
                 method: "PUT",
 

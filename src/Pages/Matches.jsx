@@ -1,6 +1,7 @@
 import { Link} from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
+import API_URL from "../api";
 
 function Matches() {
 
@@ -13,7 +14,7 @@ const [connectionStatuses, setConnectionStatuses] = useState({});
 
   // Get all users
   useEffect(() => {
-    fetch("http://localhost:3000/users")
+    fetch(`${API_URL}/users`)
       .then((response) => response.json())
       .then((data) => {
         setUsers(data.users);
@@ -33,7 +34,7 @@ const [connectionStatuses, setConnectionStatuses] = useState({});
 
     const loggedUser = JSON.parse(storedUser);
 
-    fetch(`http://localhost:3000/users/${loggedUser.id}`)
+    fetch(`${API_URL}/users/${loggedUser.id}`)
       .then((response) => response.json())
       .then((data) => {
         setCurrentProfile(data.user);
@@ -59,7 +60,7 @@ const [connectionStatuses, setConnectionStatuses] = useState({});
         }
 
         fetch(
-            `http://localhost:3000/connections/status/${loggedUser.id}?otherUserId=${person.id}`
+            `${API_URL}/connections/status/${loggedUser.id}?otherUserId=${person.id}`
         )
             .then(response => response.json())
             .then(data => {
@@ -205,7 +206,7 @@ async function handleConnect(receiverId) {
 
     const loggedUser = JSON.parse(storedUser);
 
-    const response = await fetch("http://localhost:3000/connections", {
+    const response = await fetch(`${API_URL}/connections`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import API_URL from "../api";
 
 function Register() {
   const [name, setName] = useState("");
@@ -16,7 +17,7 @@ function Register() {
       return;
     }
 
-    const response = await fetch("http://localhost:3000/users", {
+    const response = await fetch(`${API_URL}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import "../App.css";
+import API_URL from "../api";
 
 function Requests() {
 
@@ -16,7 +17,7 @@ function Requests() {
 
         const loggedUser = JSON.parse(storedUser);
 
-        fetch(`http://localhost:3000/connections/${loggedUser.id}`)
+        fetch(`${API_URL}/connections/${loggedUser.id}`)
             .then(response => response.json())
             .then(data => {
                 setRequests(data.requests || []);
@@ -33,7 +34,7 @@ function Requests() {
         try {
 
             const response = await fetch(
-                `http://localhost:3000/connections/${requestId}`,
+                `${API_URL}/connections/${requestId}`,
                 {
                     method: "PUT",
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "../App.css";
+import API_URL from "../api";
 
 function SkillSwaps() {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ function SkillSwaps() {
 
         const loggedUser = JSON.parse(storedUser);
 
-        fetch(`http://localhost:3000/skill-swaps/${loggedUser.id}`)
+        fetch(`${API_URL}/skill-swaps/${loggedUser.id}`)
             .then(response => response.json())
             .then(data => {
                 setSwaps(data.swaps || []);

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "../App.css";
+import API_URL from "../api";
 
 function Connections() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Connections() {
 
     const loggedUser = JSON.parse(storedUser);
 
-    fetch(`http://localhost:3000/connections/user/${loggedUser.id}`)
+    fetch(`${API_URL}/connections/user/${loggedUser.id}`)
       .then((response) => response.json())
       .then((data) => {
         setConnections(data.connections || []);
@@ -104,7 +105,7 @@ function Connections() {
         try {
 
             const response = await fetch(
-                "http://localhost:3000/skill-swaps",
+                `${API_URL}/skill-swaps`,
                 {
                     method: "POST",
                     headers: {

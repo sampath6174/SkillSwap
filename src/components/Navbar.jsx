@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import API_URL from "../api";
 
 function Navbar() {
 
@@ -23,7 +24,7 @@ function Navbar() {
 
     function fetchNotifications() {
 
-      fetch(`http://localhost:3000/notifications/${loggedUser.id}`)
+      fetch(`${API_URL}notifications/${loggedUser.id}`)
         .then(response => response.json())
         .then(data => {
 

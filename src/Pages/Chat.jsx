@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "../App.css";
+import API_URL from "../api";
 
 function Chat() {
 
@@ -21,7 +22,7 @@ function Chat() {
             return;
         }
 
-        fetch(`http://localhost:3000/users/${userId}`)
+        fetch(`f${API_URL}/users/${userId}`)
             .then(response => response.json())
             .then(data => {
 
@@ -48,7 +49,7 @@ function Chat() {
         const loggedUser = JSON.parse(storedUser);
 
         fetch(
-            `http://localhost:3000/messages/${loggedUser.id}/${userId}`
+            `${API_URL}/messages/${loggedUser.id}/${userId}`
         )
             .then(response => response.json())
             .then(data => {
@@ -81,7 +82,7 @@ function Chat() {
         try {
 
             const response = await fetch(
-                "http://localhost:3000/messages",
+                `${API_URL}/messages`,
                 {
                     method: "POST",
                     headers: {
